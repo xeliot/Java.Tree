@@ -26,6 +26,31 @@ public class BNode {
 		height = val;
 	}
 	
-	public int getHeight(int val){}
+	public int getHeight(){
+		return height;
+	}
 
+	public void setData(int val){
+		data = val;
+	}
+	
+	public int getData(){
+		return data;
+	}
+	
+	public void setLeft(BNode node){
+		left = node;
+	}
+	
+	public BNode getLeft(){
+		return left;
+	}
+	
+	public void setRight(BNode node){
+		right = node;
+	}
+	
+	public BNode getRight(){
+		return right;
+	}
 }
