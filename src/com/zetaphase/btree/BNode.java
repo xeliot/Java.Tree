@@ -53,4 +53,9 @@ public class BNode {
 	public BNode getRight(){
 		return right;
 	}
+
+	@Override
+	public String toString() {
+		return "BNode[" + data + ", " + right + ", " + left + "]";
+	}
 }
