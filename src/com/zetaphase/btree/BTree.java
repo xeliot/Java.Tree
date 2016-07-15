@@ -30,6 +30,79 @@ public class BTree {
 		return lhs > rhs ? lhs : rhs;
 	}
 	
+	private void balance(){
+		balance(root);
+	}
+	
+	private BNode findParent(int id){
+		return findParent(root, id);
+	}
+	
+	private BNode findParent(BNode node, int id){
+		if (root.getData()==id){
+			return null;
+		}else if(node==null){
+			return null;
+		}else{
+			if(node.getLeft()!=null){
+				if(node.getLeft().getData()==id){
+					return node;
+				}
+			}
+			if(node.getRight()!=null){
+				if(node.getRight().getData()==id){
+					return node;
+				}
+			}
+			findParent(node.getLeft(),  id);
+			findParent(node.getRight(),  id);
+		}
+		return null;
+	}
+	
+	BNode tmpParent;
+	Boolean isLeft;
+	
+	private void balance(BNode node){
+		//System.out.print(node);
+		//System.out.println(height(node.getLeft()) - height(node.getRight()));
+		if(height(node.getLeft()) - height(node.getRight()) == 2){
+			System.out.println("hit");
+			if (findParent(node.getData()).getLeft().getData()==node.getData()){
+				isLeft=true;
+			}else{
+				isLeft=false;
+			}
+			tmpParent = findParent(node.getData());
+			node = rotateWithLeftChild(node);
+			if (isLeft){
+				tmpParent.setLeft(node);
+			}else{
+				tmpParent.setRight(node);
+			}
+		}else if(height(node.getRight()) - height(node.getLeft()) == 2){
+			System.out.println("hit");
+			if (findParent(node.getData()).getLeft().getData()==node.getData()){
+				isLeft=true;
+			}else{
+				isLeft=false;
+			}
+			tmpParent = findParent(node.getData());
+			node = rotateWithRightChild(node);
+			if (isLeft){
+				tmpParent.setLeft(node);
+			}else{
+				tmpParent.setRight(node);
+			}
+		}
+		if(node.getLeft()!=null){
+			balance(node.getLeft());
+		}
+		if(node.getRight()!=null){
+			balance(node.getRight());
+		}
+	}
+	
 	private void updateHeight(){
 		updateHeight(root);
 	}
@@ -118,6 +191,8 @@ public class BTree {
 			}
 		}
 		updateHeight();
+		System.out.println(this.toString());
+		balance();
 		return true;
 	}
 	private boolean case2 = false;
@@ -263,13 +338,30 @@ public class BTree {
 		t.insert(9);
 		t.insert(10);
 		t.insert(11);
-		t.delete(9);
-		t.delete(11);
+		t.insert(12);
+		t.insert(13);
+		t.insert(14);
+		t.insert(15);
+		t.insert(16);
+		t.delete(2);
+		t.delete(4);
+		//t.delete(9);
+		//t.delete(11);
+		/*
+		System.out.println(t.getRoot().getHeight());
+		System.out.println(t.getRoot().getLeft().getHeight());
+		System.out.println(t.getRoot().getLeft().getLeft().getHeight());
+		System.out.println(t.getRoot().getLeft().getRight().getHeight());
+		System.out.println(t.getRoot().getRight().getHeight());
+		System.out.println(t.getRoot().getRight().getLeft().getHeight());
+		System.out.println(t.getRoot().getRight().getLeft().getLeft().getHeight());
+		System.out.println(t.getRoot().getRight().getLeft().getRight().getHeight());
 		//System.out.println(t.getRoot().getHeight());
 		//System.out.println(t.getRoot().getLeft().getHeight());
 		//System.out.println(t.getRoot().getLeft().getLeft().getHeight());
 		//System.out.println(t.getRoot().getRight().getHeight());
 		//t.insert(3);
+		 */
 		System.out.println(t);
 	}
 

@@ -5,11 +5,14 @@ public class BNode {
 	private BNode left, right;
 	private int data;
 	private int height;
+	private BNode parent;
+	
 	
 	//constructor
 	public BNode() {
 		left = null;
 		right = null;
+		parent = null;
 		data = 0;
 		height = 0;
 	}
@@ -18,8 +21,17 @@ public class BNode {
 	public BNode(int n){
 		left = null;
 		right = null;
+		parent = null;
 		data = n;
 		height = 0;
+	}
+	
+	public void setParent(BNode node){
+		parent = node;
+	}
+	
+	public BNode getParent(){
+		return parent;
 	}
 	
 	public void setHeight(int val){
