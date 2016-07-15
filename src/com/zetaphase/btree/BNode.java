@@ -56,6 +56,6 @@ public class BNode {
 
 	@Override
 	public String toString() {
-		return "BNode[" + data + ", " + right + ", " + left + "]";
+		return "BNode[" + data + ", " + left + ", " + right + "]";
 	}
 }

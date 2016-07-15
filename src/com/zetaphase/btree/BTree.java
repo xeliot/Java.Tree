@@ -1,5 +1,7 @@
 package com.zetaphase.btree;
 
+import com.zetaphase.tree.Node;
+
 public class BTree {
 
 	private BNode root;
@@ -28,6 +30,126 @@ public class BTree {
 		return lhs > rhs ? lhs : rhs;
 	}
 	
+	private void updateHeight(){
+		updateHeight(root);
+	}
+	
+	private void updateHeight(BNode node){
+		if (node.getLeft()==null && node.getRight()==null){
+			node.setHeight(0);
+		}else if(node.getLeft()==null){
+			node.setHeight(node.getRight().getHeight()+1);
+		}else if(node.getRight()==null){
+			node.setHeight(node.getLeft().getHeight()+1);
+		}else{
+			node.setHeight(max(height(node.getLeft()), height(node.getRight()))+1);
+		}
+		if(node.getLeft()!=null){
+			updateHeight(node.getLeft());
+		}
+		if(node.getRight()!=null){
+			updateHeight(node.getRight());
+		}
+	}
+	
+	public boolean delete(int id){
+		BNode parent = root;
+		BNode current = root;
+		boolean isLeftChild = false;
+		while(current.getData()!=id){
+			parent = current;
+			if (current.getData()>id){
+				isLeftChild = true;
+				current = current.getLeft();
+			}else{
+				isLeftChild = false;
+				current = current.getRight();
+			}
+			if (current==null){
+				return false;
+			}
+		}
+		if(current.getLeft()==null && current.getRight()==null){
+			if(current==root){
+				root=null;
+			}
+			if(isLeftChild){
+				parent.setLeft(null);
+			}else{
+				parent.setRight(null);
+			}
+		}else if(current.getRight()==null){
+			if(current==root){
+				root = current.getLeft();
+			}else if(isLeftChild){
+				parent.setLeft(current.getLeft());
+			}else{
+				parent.setRight(current.getLeft());
+			}
+		}else if(current.getLeft()==null){
+			if(current==root){
+				root = current.getRight();
+			}else if(isLeftChild){
+				parent.setLeft(current.getRight());
+			}else{
+				parent.setRight(current.getRight());
+			}
+		}else if(current.getLeft()!=null && current.getRight()!=null){
+			BNode successor = getSuccessor(current);
+			if (current==root){
+				root = successor;
+			}else if(isLeftChild){
+				parent.setLeft(successor);
+			}else{
+				parent.setRight(successor);
+			}
+			successor.setLeft(current.getLeft());
+			if(case2){
+				if(successor.getLeft()==null && successor.getRight()==null){
+					successor.setHeight(0);
+				}else if(successor.getLeft()==null){
+					successor.setHeight(successor.getRight().getHeight()+1);
+				}else if(successor.getRight()==null){
+					successor.setHeight(successor.getLeft().getHeight()+1);
+				}else{
+					successor.setHeight(max(successor.getLeft().getHeight(), successor.getRight().getHeight()));
+				}
+				case2=false;
+			}
+		}
+		updateHeight();
+		return true;
+	}
+	private boolean case2 = false;
+	public BNode getSuccessor(BNode node){
+		BNode successor = null;
+		BNode successorParent = null;
+		BNode current = node.getRight();
+		while(current != null){
+			successorParent = successor;
+			successor = current;
+			//System.out.println(successor.getHeight());
+			current = current.getLeft();
+		}
+		if(successor!=node.getRight()){
+			successorParent.setLeft(successor.getRight());
+			successor.setRight(node.getRight());
+			int a = node.getRight().getLeft().getHeight();
+			int b = node.getRight().getRight().getHeight();
+			int c = node.getLeft().getHeight();
+			if ((c>a)&&(c>b)){
+				successor.setHeight(c+1);
+			}else if((b>a) && (b>c)){
+				successor.setHeight(b+2);
+			}else if((a>b) && (a>c)){
+				successor.setHeight(a+2);
+			}
+		}else{
+			case2=true;
+		}
+		return successor;
+	}
+	
 	private BNode insert(int val, BNode node){
 		if (node==null){
 			node = new BNode(val);
@@ -41,7 +163,7 @@ public class BTree {
 				}
 			}
 		}else if(val > node.getData()){
-			node.setLeft(insert(val, node.getRight()));
+			node.setRight(insert(val, node.getRight()));
 			if(height(node.getRight()) - height(node.getLeft()) == 2){
 				if(val>node.getRight().getData()){
 					node = rotateWithRightChild(node);
@@ -119,9 +241,36 @@ public class BTree {
 		return found;
 	}
 	
+	public BNode getRoot(){
+		return root;
+	}
+	
+	@Override
+	public String toString(){
+		return root.toString();
+	}
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		BTree t = new BTree();
+		t.insert(1);
+		t.insert(2);
+		t.insert(3);
+		t.insert(4);
+		t.insert(5);
+		t.delete(6);
+		t.insert(7);
+		t.insert(8);
+		t.insert(9);
+		t.insert(10);
+		t.insert(11);
+		t.delete(9);
+		t.delete(11);
+		//System.out.println(t.getRoot().getHeight());
+		//System.out.println(t.getRoot().getLeft().getHeight());
+		//System.out.println(t.getRoot().getLeft().getLeft().getHeight());
+		//System.out.println(t.getRoot().getRight().getHeight());
+		//t.insert(3);
+		System.out.println(t);
 	}
 
 }
