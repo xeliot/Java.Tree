@@ -344,6 +344,7 @@ public class BTree {
 		t.insert(15);
 		t.insert(16);
 		t.delete(2);
+		
 		t.delete(4);
 		//t.delete(9);
 		//t.delete(11);
